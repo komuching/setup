@@ -1,1 +1,1 @@
-# setup
+# setup for ubuntu new
