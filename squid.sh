@@ -1,31 +1,49 @@
 #!/bin/bash
 
-# Update dan upgrade paket
-sudo apt update && sudo apt upgrade -y
+# Hentikan layanan Squid jika berjalan
+echo "Menghentikan layanan Squid jika sedang berjalan..."
+sudo systemctl stop squid
 
-# Instal Squid dan apache2-utils untuk membuat pengguna autentikasi
-sudo apt install -y squid apache2-utils
+# Hapus instalasi Squid dan konfigurasi lama
+echo "Menghapus instalasi Squid dan konfigurasi lama..."
+sudo apt remove --purge -y squid
+sudo rm -rf /etc/squid
+sudo rm -rf /var/log/squid
+sudo rm -rf /var/spool/squid
+echo "Squid dan konfigurasi lama telah dihapus."
 
-# Buat file autentikasi dan tambahkan user "qodrat" dengan password
-# Anda akan diminta memasukkan password untuk user ini
-sudo htpasswd -c /etc/squid/passwd qodrat
+# Instal Squid
+echo "Menginstal Squid..."
+sudo apt update
+sudo apt install -y squid
+echo "Squid telah berhasil diinstal."
 
-# Konfigurasi Squid untuk menggunakan autentikasi dasar
-sudo bash -c 'cat <<EOF >> /etc/squid/squid.conf
-
-# Autentikasi pengguna
-auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
-auth_param basic realm "Squid Proxy Authentication"
-acl authenticated proxy_auth REQUIRED
-http_access allow authenticated
-http_access deny all
+# Konfigurasi Squid untuk menggunakan port 32189 dan mengizinkan akses dari semua IP
+echo "Mengonfigurasi Squid pada port 32189 dengan akses terbuka..."
+sudo bash -c 'cat <<EOF > /etc/squid/squid.conf
+http_port 32189
+acl all src all
+http_access allow all
 EOF'
+echo "Konfigurasi Squid selesai."
 
-# Restart layanan Squid untuk menerapkan perubahan
+# Restart layanan Squid untuk menerapkan konfigurasi baru
+echo "Memulai ulang layanan Squid untuk menerapkan konfigurasi..."
 sudo systemctl restart squid
+echo "Layanan Squid telah berhasil dijalankan dengan konfigurasi baru."
 
-# Menampilkan status layanan Squid
+# Konfigurasi UFW untuk mengizinkan akses ke port 32189 TCP
+echo "Mengonfigurasi UFW untuk mengizinkan akses ke port 32189 TCP..."
+sudo ufw allow 32189/tcp
+sudo ufw reload
+echo "Aturan UFW untuk port 32189 TCP telah berhasil diterapkan."
+
+# Tampilkan status layanan Squid untuk verifikasi
+echo "Verifikasi status layanan Squid:"
 sudo systemctl status squid
 
-echo "Instalasi dan konfigurasi Squid selesai."
-echo "Squid Proxy hanya dapat diakses oleh user 'qodrat' dengan autentikasi."
+echo "============================================================"
+echo "Squid Proxy telah berhasil diinstal dan dikonfigurasi."
+echo "Proxy berjalan di port 32189 dan terbuka untuk semua IP."
+echo "Port 32189 TCP telah dibuka di UFW."
+echo "============================================================"
