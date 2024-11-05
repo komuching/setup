@@ -24,6 +24,7 @@ sudo bash -c 'cat <<EOF > /etc/squid/squid.conf
 http_port 32189
 acl all src all
 http_access allow all
+http_port 32189
 EOF'
 echo "Konfigurasi Squid selesai."
 
