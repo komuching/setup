@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update package list dan upgrade semua paket
-sudo apt update && sudo apt upgrade -y
+sudo apt update && apt install sudo && sudo apt upgrade -y
 
 # Install curl
 sudo apt install -y curl
