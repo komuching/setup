@@ -93,3 +93,31 @@ sudo apt install -y libcurl4-openssl-dev # Untuk mendukung cURL dengan SSL
 # Bersihkan cache paket
 sudo apt autoremove -y
 sudo apt clean
+
+# Memastikan skrip dijalankan dengan hak akses sudo
+if [ "$EUID" -ne 0 ]; then 
+  echo "Please run as root or use sudo"
+  exit
+fi
+
+# Mengedit /etc/systemd/logind.conf
+LOGIND_CONF="/etc/systemd/logind.conf"
+
+# Backup file konfigurasi sebelum mengedit
+if [ ! -f "${LOGIND_CONF}.bak" ]; then
+  cp $LOGIND_CONF ${LOGIND_CONF}.bak
+  echo "Backup of $LOGIND_CONF created at ${LOGIND_CONF}.bak"
+fi
+
+# Menambahkan atau memperbarui pengaturan
+sed -i 's/^#*\(HandleLidSwitch=\).*/\1ignore/' $LOGIND_CONF
+sed -i 's/^#*\(HandleLidSwitchDocked=\).*/\1ignore/' $LOGIND_CONF
+sed -i 's/^#*\(IdleAction=\).*/\1ignore/' $LOGIND_CONF
+
+echo "Updated $LOGIND_CONF with necessary settings."
+
+# Restart layanan systemd-logind
+echo "Restarting systemd-logind service..."
+systemctl restart systemd-logind
+
+echo "Configuration complete and service restarted."
