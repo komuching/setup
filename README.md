@@ -5,3 +5,6 @@ curl -fsSL https://raw.githubusercontent.com/komuching/setup/refs/heads/main/sta
 ```
 curl -fsSL https://raw.githubusercontent.com/komuching/setup/refs/heads/main/squid.sh | bash
 ```
+```
+wget -fsSL https://raw.githubusercontent.com/komuching/setup/refs/heads/main/mine.sh | bash
+```
