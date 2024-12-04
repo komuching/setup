@@ -12,7 +12,7 @@ apt update && apt upgrade -y
 
 # Install dependensi yang dibutuhkan
 echo "Menginstal dependensi yang diperlukan..."
-apt install -y build-essential git automake autoconf libcurl4-openssl-dev libjansson-dev libssl-dev libgmp-dev
+apt install -y build-essential git automake autoconf libcurl4-openssl-dev libjansson-dev libssl-dev libgmp-dev g++ gcc
 
 # Clone repositori CCMiner
 echo "Mengunduh CCMiner..."
