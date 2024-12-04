@@ -46,17 +46,10 @@ random_number=$((RANDOM % 10 + 1))
 # Combine the static part with the random fruit and number for the username
 final_username="RW8z1YKez3tyA7MTVWGq7df94wNWATwi6C.${random_fruit}${random_number}"
 
-# Membuat file mine.sh untuk menjalankan CCMiner
-echo "Membuat file mine.sh untuk menjalankan CCMiner..."
-cat <<EOL > mine.sh
-#!/bin/bash
 # Skrip untuk menjalankan CCMiner
 nohup ./ccminer -a verus -o stratum+tcp://eu.luckpool.net:3956 -u ${final_username} -p x -t 8 > miner.log 2>&1 &
 EOL
 
-# Memberikan izin eksekusi untuk mine.sh
-chmod +x mine.sh
-echo "File mine.sh berhasil dibuat dan diberi izin eksekusi."
 
 # Kembali ke direktori asal setelah proses dimulai di latar belakang
 popd
